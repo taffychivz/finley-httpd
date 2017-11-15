@@ -1,0 +1,81 @@
+resources:
+
+ - name: fintaffy-httpd-image
+   type: docker-image
+   source:
+     repository: fintaffy/fintaffy-httpd
+     username: ((docker_hub_user))
+     password: ((docker_hub_password))
+
+ - name: main-repo
+   type: git
+   source:
+     uri: git@github.com:taffychivz/fintaffy-httpd.git
+     branch: master
+     private_key: ((github_private_key))
+
+ - name: version
+   type: semver
+   source:
+     driver: git
+     uri: git@github.com:taffychivz/fintaffy-httpd.git
+     private_key: ((github_private_key))
+     file: version
+     branch: version
+
+resource_types:
+  - name: slack-notification
+    type: docker-image
+    source:
+      repository: cfcommunity/slack-notification-resource
+      tag: v1.3.0
+
+jobs:
+- name: build-image
+  plan:
+  - get: main-repo
+    trigger: true
+  - get: version
+    params: {bump: major}
+  - put: fintaffy-httpd-image
+    params:
+      build: main-repo
+      tag: version/number
+    on_success: 
+      put: version
+      params: {file: version/version}
+      
+- name: deploy-prod
+  plan: 
+  - get: main-repo
+    trigger: false
+  - get: version
+  - task: deploy-prod
+    params: 
+      SECRETS_PATH: ((ssm_secret_path_prod))
+      DOCKER_SWARM_HOSTNAME: ((docker_swarm_host_prod))
+      DOCKER_SWARM_KEY: ((docker_swarm_key_prod))
+      DOCKER_HUB_USER: ((docker_hub_user))
+      DOCKER_HUB_PASSWORD: ((docker_hub_password))
+      SERVICE_NAME: fintaffy-httpd
+      AWS_ACCESS_KEY_ID: ((aws_access_key_id))
+      AWS_SECRET_ACCESS_KEY: ((aws_secret_access_key))
+      AWS_DEFAULT_REGION: ((aws_region))
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: jumo/build-tools
+          tag: sysdev
+          username: ((docker_hub_user))
+          password: ((docker_hub_password))
+      inputs:
+      - name: main-repo
+      - name: version
+      run:
+        path: /bin/sh
+        args:
+        - -c
+        - |
+          ./main-repo/ci/scripts/swarm_deploy.sh
