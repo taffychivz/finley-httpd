@@ -27,7 +27,7 @@ docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
 $commandstr
 
 # clean up
-rm -f www-jumo-world
+rm -f fin taffy-https
 set -x
 
 echo "$SERVICE_NAME deployed..."
