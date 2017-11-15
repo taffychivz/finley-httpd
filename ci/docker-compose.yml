@@ -1,0 +1,43 @@
+version: '3.3'
+
+services:
+  web:
+    image: "fintaffy/fintaffy-httpd:{{ VERSION }}"
+    networks:
+      - proxy
+    environment:
+      - "SECRETLOC=/run/secrets/web-v{{ VERSION }}"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+    secrets:
+      - source: "web-v{{ VERSION }}"
+      - source: github_reader_key_base64
+    
+    deploy:
+      labels: 
+        traefik.backend=phpmyadmin
+        traefik.frontend.rule=Host:phpmyadmin.baltimoreconstruction.co.za
+        traefik.docker.network=proxy
+        traefik.port=80
+      update_config:
+        parallelism: 1
+        delay: 180s
+      mode: replicated
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+
+
+
+networks:
+  proxy:
+    external: true
+
+secrets:
+  web-v{{ VERSION }}:
+    file: ./fintaffy-httpd
+  github_reader_key_base64:
+external: true
