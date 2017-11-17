@@ -78,4 +78,4 @@ jobs:
         args:
         - -c
         - |
-          ./main-repo/ci/scripts/swarm_deploy.sh
+          echo "Hi"
