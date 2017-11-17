@@ -5,7 +5,7 @@ services:
   web:
     image: "fintaffy/fintaffy-httpd:{{ VERSION }}"
     networks:
-      -  ntw_front
+      -  httpd
     environment:
       - "SECRETLOC=/run/secrets/web-v{{ VERSION }}"
     healthcheck:
@@ -30,7 +30,7 @@ services:
         condition: on-failure
 
 networks:
-   ntw_front:
+   httpd:
     external: true
 
 secrets:
