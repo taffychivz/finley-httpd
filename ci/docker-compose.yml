@@ -18,10 +18,10 @@ services:
       - source: github_reader_key_base64
     deploy:
       labels: 
-      - traefik.backend=phpmyadmin
-      - traefik.frontend.rule=Host:phpmyadmin.baltimoreconstruction.co.za
-      - traefik.docker.network=proxy
-      - traefik.port=80
+        - traefik.backend=phpmyadmin
+        - traefik.frontend.rule=Host:phpmyadmin.baltimoreconstruction.co.za
+        - traefik.docker.network=proxy
+        - traefik.port=80
       update_config:
         parallelism: 1
         delay: 180s
