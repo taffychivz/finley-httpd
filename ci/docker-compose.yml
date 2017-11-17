@@ -5,7 +5,7 @@ services:
   web:
     image: "fintaffy/fintaffy-httpd:{{ VERSION }}"
     networks:
-      - proxy
+      -  ntw_front
     environment:
       - "SECRETLOC=/run/secrets/web-v{{ VERSION }}"
     healthcheck:
@@ -20,7 +20,7 @@ services:
       labels: 
         - traefik.backend=phpmyadmin
         - traefik.frontend.rule=Host:phpmyadmin.baltimoreconstruction.co.za
-        - traefik.docker.network=proxy
+        - traefik.docker.network= ntw_front
         - traefik.port=80
       update_config:
         parallelism: 1
@@ -31,7 +31,7 @@ services:
         condition: on-failure
 
 networks:
-  proxy:
+   ntw_front:
     external: true
 
 secrets:
