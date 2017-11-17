@@ -67,7 +67,7 @@ jobs:
         type: docker-image
         source:
           repository: fintaffy/build-tools
-          tag: latest
+          tag: tag
           username: ((docker_hub_user))
           password: ((docker_hub_password))
       inputs:
