@@ -15,7 +15,6 @@ services:
       retries: 3
     secrets:
       - source: "web-v{{ VERSION }}"
-      - source: github_reader_key_base64
     deploy:
       labels: 
         - traefik.backend=phpmyadmin
