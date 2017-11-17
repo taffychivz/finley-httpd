@@ -37,5 +37,3 @@ networks:
 secrets:
   web-v{{ VERSION }}:
     file: ./fintaffy-httpd
-  github_reader_key_base64:
-    external: true
