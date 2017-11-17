@@ -18,7 +18,7 @@ chmod 600 docker_swarm_key.pem
 
 # Set deploy requirements
 commandstr="docker stack deploy -c ./main-repo/ci/docker-compose.yml $SERVICE_NAME --with-registry-auth"
-ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i ./docker_swarm_key.pem -NL localhost:2376:/var/run/docker.sock docker@$DOCKER_SWARM_HOSTNAME &
+ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -i ./docker_swarm_key.pem -NL localhost:2376:/var/run/docker.sock ec2-user@$DOCKER_SWARM_HOSTNAME &
 export DOCKER_HOST="localhost:2376"
 sleep 3
 docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
